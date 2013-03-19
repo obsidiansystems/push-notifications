@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+module IOS (pushMess) where
+
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import Data.Binary.Put
@@ -15,8 +17,14 @@ import Network.BSD (getHostByName, hostAddress, getProtocolNumber)
 import OpenSSL
 import OpenSSL.Session as SSL
   
+{-
+show link to source
+
+Sandbox choice
+-}
   
-pushMess keyfile certfile payload token = withOpenSSL $ do
+pushMess:: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
+pushMess keyfile certfile payload tokens = withOpenSSL $ do
   -- Prepare SSL context
   ssl <- context
   contextSetPrivateKeyFile ssl keyfile
@@ -35,16 +43,14 @@ pushMess keyfile certfile payload token = withOpenSSL $ do
   SSL.connect sslsocket  -- Handshake
 
   expiration <- getExpiryTime
-  -- we send pdu here
-  let btoken = fst $ B16.decode token
-      lpdu = runPut $ buildPDU btoken payload expiration
-      pdu = toStrict lpdu
-    in do
-    SSL.write sslsocket pdu
-    SSL.shutdown sslsocket Unidirectional -- Close gracefully
-  where
-    toStrict = B.concat . BL.toChunks
-
+  let sendPDU token =
+        let btoken = fst $ B16.decode token
+            lpdu = runPut $ buildPDU btoken payload expiration
+            pdu = B.concat $ BL.toChunks lpdu
+        in 
+          SSL.write sslsocket pdu
+  sequence_ $ map sendPDU tokens
+  SSL.shutdown sslsocket Unidirectional -- Close gracefully
 
 
 buildPDU :: B.ByteString -> BL.ByteString -> Word32 -> Put
