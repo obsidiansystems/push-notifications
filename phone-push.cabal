@@ -2,6 +2,7 @@ name:             phone-push
 version:          0.1.0
 copyright:        (c) 2013 David Fendrich
 license:          BSD3
+license-file:     LICENSE
 maintainer:       David Fendrich <david@aitellu.com>
 build-type:       Simple
 cabal-version:    >= 1.14
