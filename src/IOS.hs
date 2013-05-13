@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module IOS (pushMess) where
+module IOS (pushMessLive, pushMessTest) where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
@@ -19,12 +19,19 @@ import OpenSSL.Session as SSL
   
 {-
 show link to source
-
-Sandbox choice
 -}
   
-pushMess :: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
-pushMess keyfile certfile payload tokens = withOpenSSL $ do
+pushMessLive :: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()
+pushMessLive =
+  pushMess "gateway.push.apple.com"
+  
+pushMessTest :: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()
+pushMessTest =
+  pushMess "gateway.sandbox.push.apple.com"
+
+  
+pushMess :: String -> FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
+pushMess server keyfile certfile payload tokens = withOpenSSL $ do
   -- Prepare SSL context
   ssl <- context
   contextSetPrivateKeyFile ssl keyfile
@@ -34,7 +41,7 @@ pushMess keyfile certfile payload tokens = withOpenSSL $ do
 
   -- Open socket
   proto <- (getProtocolNumber "tcp")
-  he <- getHostByName "gateway.push.apple.com"
+  he <- getHostByName server
   sock <- socket AF_INET Stream proto
   Network.Socket.connect sock (SockAddrInet 2195 (hostAddress he))
 
