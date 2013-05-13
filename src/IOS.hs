@@ -23,7 +23,7 @@ show link to source
 Sandbox choice
 -}
   
-pushMess:: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
+pushMess :: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
 pushMess keyfile certfile payload tokens = withOpenSSL $ do
   -- Prepare SSL context
   ssl <- context
@@ -34,7 +34,7 @@ pushMess keyfile certfile payload tokens = withOpenSSL $ do
 
   -- Open socket
   proto <- (getProtocolNumber "tcp")
-  he <- getHostByName "gateway.sandbox.push.apple.com"
+  he <- getHostByName "gateway.push.apple.com"
   sock <- socket AF_INET Stream proto
   Network.Socket.connect sock (SockAddrInet 2195 (hostAddress he))
 
