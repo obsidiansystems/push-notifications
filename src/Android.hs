@@ -12,8 +12,6 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 
 {-
-Remove printing
-
 Resend with exponential fallback
 -}
 
@@ -28,8 +26,8 @@ pushMess apikey payload =
                                            ("Content-Type", "application/json")],
                          requestBody = RequestBodyLBS payload} manager
      liftIO $ do
-       print $ unpack payload
-       print $ responseStatus res
-       print $ responseBody res
+       --print $ unpack payload
+       --print $ responseStatus res
+       --print $ responseBody res
        mapM_ print $ responseHeaders res
 
