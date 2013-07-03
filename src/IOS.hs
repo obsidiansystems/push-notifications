@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module IOS (pushMessLive, pushMessTest) where
+module IOS (pushMessLive, pushMessTest, checkFailLive, checkFailTest) where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
@@ -29,6 +29,45 @@ pushMessTest :: FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()
 pushMessTest =
   pushMess "gateway.sandbox.push.apple.com"
 
+checkFailLive :: FilePath -> FilePath -> IO [B.ByteString]
+checkFailLive =
+  checkFail "feedback.push.apple.com"
+  
+checkFailTest :: FilePath -> FilePath -> IO [B.ByteString]
+checkFailTest =
+  checkFail "feedback.sandbox.push.apple.com"
+
+
+splitBS :: B.ByteString -> [B.ByteString]
+splitBS xs =
+  let xs1 = B.drop 6 xs
+      token = B.take 32 xs1
+      nexst = B.drop 32 xs1
+  in
+   if B.null token then [] else token:(splitBS nexst)
+      
+  
+
+checkFail :: String -> FilePath -> FilePath -> IO [B.ByteString]
+checkFail server keyfile certfile = withOpenSSL $ do
+  ssl <- context
+  contextSetPrivateKeyFile ssl keyfile
+  contextSetCertificateFile ssl certfile
+  contextSetDefaultCiphers ssl
+  contextSetVerificationMode ssl SSL.VerifyNone
+  
+  proto <- (getProtocolNumber "tcp")
+  he <- getHostByName server
+  sock <- socket AF_INET Stream proto
+  Network.Socket.connect sock (SockAddrInet 2196 (hostAddress he))
+  
+  sslsocket <- connection ssl sock
+  SSL.connect sslsocket  -- Handshake
+  bs <- SSL.read sslsocket 7600000
+  print $ B.length bs
+  SSL.shutdown sslsocket Unidirectional
+  
+  return $ splitBS bs
   
 pushMess :: String -> FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()  
 pushMess server keyfile certfile payload tokens = withOpenSSL $ do

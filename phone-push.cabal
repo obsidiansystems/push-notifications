@@ -1,5 +1,5 @@
 name:             phone-push
-version:          0.1.2
+version:          0.1.4
 copyright:        (c) 2013 David Fendrich
 license:          BSD3
 license-file:     LICENSE
@@ -41,4 +41,5 @@ Library
     , base16-bytestring >= 0.1.1.5
     , convertible >= 1.0.11.1
     , binary >= 0.5.1.0
+    , http-types >= 0.8.0
 

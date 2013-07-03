@@ -2,11 +2,10 @@
 
 module Android (pushMess) where 
 
-import Network.HTTP.Conduit
-import Data.Conduit
+import Network.HTTP.Conduit (newManager, parseUrl, def, httpLbs, method, requestHeaders, requestBody, responseHeaders, RequestBody(RequestBodyLBS))
+import Data.Conduit (runResourceT)
 import Control.Monad.IO.Class (liftIO)
-
-import Data.ByteString.Lazy.Char8 (unpack)
+import Network.HTTP.Types.Header (ResponseHeaders)
 
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
@@ -15,7 +14,7 @@ import qualified Data.ByteString.Lazy as LBS
 Resend with exponential fallback
 -}
 
-pushMess :: BS.ByteString -> LBS.ByteString -> IO ()
+pushMess :: BS.ByteString -> LBS.ByteString -> IO ResponseHeaders
 pushMess apikey payload =
    runResourceT $ do
      liftIO $ print payload
@@ -25,9 +24,6 @@ pushMess apikey payload =
                          requestHeaders = [("Authorization", BS.append "key=" apikey),
                                            ("Content-Type", "application/json")],
                          requestBody = RequestBodyLBS payload} manager
-     liftIO $ do
-       --print $ unpack payload
-       --print $ responseStatus res
-       --print $ responseBody res
-       mapM_ print $ responseHeaders res
+     return $ responseHeaders res
+
 
