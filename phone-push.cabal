@@ -42,6 +42,5 @@ Library
     , convertible >= 1.0.11.1
     , binary >= 0.5.1.0
     , http-types >= 0.8.0
-    , data-default >= 0.7.1.1
     , resourcet >= 1.1.9
 
