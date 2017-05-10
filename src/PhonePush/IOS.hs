@@ -8,7 +8,7 @@
 -- Sending push notifications requires an "Apple Push Services" certificate and
 -- an Apple-provided device token.
 --
--- _APS Certificate_
+-- == Getting an APS Certificate
 --
 -- The APS certificate is produced in the iOS Provisioning Portal. Once you've
 -- generated the certificate, you can download it from the Provisioning Portal.
@@ -24,13 +24,13 @@
 -- > openssl x509 -in aps_development.cer -inform DER -outform PEM -out cert.pem
 -- > openssl pkcs12 -in key.p12 -out key.pem -nodes
 --
--- _Device Token_
+-- == Getting a Device Token
 --
 -- Device tokens are retrieved from Apple on the device itself by calling
 -- the @registerForRemoteNotifications@ method of the @UIApplication@ object.
 -- For more information, please see Apple's documentation <https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/HandlingRemoteNotifications.html#//apple_ref/doc/uid/TP40008194-CH6-SW1 here>.
 --
--- _Credits_
+-- == Credits
 -- Originally based on a blog post by Teemu Ikonen, available <https://bravenewmethod.com/2012/11/08/apple-push-notifications-with-haskell/ here>.
 
 module PhonePush.IOS where
@@ -72,7 +72,7 @@ feedbackTest = "feedback.sandbox.push.apple.com"
 data ApplePushMessage = ApplePushMessage
   { _applePushMessage_deviceToken :: B.ByteString
   , _applePushMessage_payload :: BL.ByteString
-  -- ^ JSON encoded payload, conforming to <https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW1 this specification>. See "PhonePush.IOS.Payload:
+  -- ^ JSON encoded payload, conforming to <https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW1 this specification>. See "PhonePush.IOS.Payload"
   , _applePushMessage_expiry :: Word32
   }
 
