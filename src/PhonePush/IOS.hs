@@ -103,6 +103,14 @@ checkFail server keyfile certfile = withOpenSSL $ do
 
   return $ splitBS bs
 
+-- | Opens an APNS connection, runs the supplied action with the SSL socket, and closes the connection.
+--
+-- Example usage:
+--
+-- > withAPNSSocket cfg $ \sslsocket -> sendApplePushMessage msg sslsocket
+--
+-- Note that in practice you should keep the SSL socket open and re-use it. From the <https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html#//apple_ref/doc/uid/TP40008194-CH11-SW1 Apple documentation>:
+-- \"APNs treats rapid connection and disconnection as a denial-of-service attack.\"
 withAPNSSocket :: APNSConfig -> (SSL -> IO ()) -> IO ()
 withAPNSSocket (APNSConfig server keyfile certfile) f = withOpenSSL $ do
   -- Prepare SSL context
@@ -124,6 +132,7 @@ withAPNSSocket (APNSConfig server keyfile certfile) f = withOpenSSL $ do
  -- Close gracefully
   SSL.shutdown sslsocket Unidirectional
 
+-- | Send a message through the SSL socket
 sendApplePushMessage :: ApplePushMessage -> SSL -> IO ()
 sendApplePushMessage m sslsocket =
   let lpdu = runPut $ buildPDU m
