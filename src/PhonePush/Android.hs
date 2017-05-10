@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, OverloadedStrings #-}
 
-module Android (pushMess) where 
+module PhonePush.Android (pushMess) where 
 
 import Network.HTTP.Conduit (newManager, parseUrlThrow, httpLbs, method, requestHeaders, requestBody, responseHeaders, RequestBody(RequestBodyLBS), tlsManagerSettings)
 import Control.Monad.IO.Class (liftIO)
