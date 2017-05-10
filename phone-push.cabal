@@ -23,6 +23,7 @@ Library
   Exposed-modules:
       PhonePush.Android
       PhonePush.IOS
+      PhonePush.IOS.Payload
   ghc-options:
       -Wall -fno-warn-unused-do-bind
   default-language:
