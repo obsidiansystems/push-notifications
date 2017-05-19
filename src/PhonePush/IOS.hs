@@ -48,8 +48,6 @@ import Network.Socket
 import OpenSSL
 import OpenSSL.Session as SSL
 
-import PhonePush.IOS.Payload
-
 data APNSConfig = APNSConfig
   { _APNSConfig_server :: String
   , _APNSConfig_key :: FilePath
@@ -133,8 +131,8 @@ withAPNSSocket (APNSConfig server keyfile certfile) f = withOpenSSL $ do
   SSL.shutdown sslsocket Unidirectional
 
 -- | Send a message through the SSL socket
-sendApplePushMessage :: ApplePushMessage -> SSL -> IO ()
-sendApplePushMessage m sslsocket =
+sendApplePushMessage :: SSL -> ApplePushMessage -> IO ()
+sendApplePushMessage sslsocket m =
   let lpdu = runPut $ buildPDU m
       pdu = B.concat $ BL.toChunks lpdu
   in SSL.write sslsocket pdu
@@ -169,5 +167,5 @@ getExpiryTime = do
 pushMess :: String -> FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()
 pushMess server keyfile certfile payload tokens = withAPNSSocket (APNSConfig server keyfile certfile) $ \sslsocket -> do
   expiration <- getExpiryTime
-  let sendPDU token = sendApplePushMessage (ApplePushMessage token payload expiration) sslsocket
+  let sendPDU token = sendApplePushMessage sslsocket $ ApplePushMessage token payload expiration
   sequence_ $ map sendPDU tokens

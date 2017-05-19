@@ -22,6 +22,7 @@ source-repository head
 Library
   Exposed-modules:
       PhonePush.Android
+      PhonePush.Android.Payload
       PhonePush.IOS
       PhonePush.IOS.Payload
   ghc-options:
@@ -47,4 +48,5 @@ Library
     , aeson
     , text
     , casing
+    , data-default
 

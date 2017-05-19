@@ -1,14 +1,19 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module PhonePush.IOS.Payload where
 
 import Data.Aeson.TH
+import Data.Default
 import Data.Text (Text)
 import Text.Casing
 
 data ApsPayload = ApsPayload
   { _apsPayload_aps :: Aps
   }
+
+instance Default ApsPayload where
+  def = ApsPayload def
 
 data Aps = Aps
   { _aps_alert :: ApsAlert
@@ -25,11 +30,28 @@ data Aps = Aps
   -- ^ The app-specific messaging thread identifier, used to group notifications
   }
 
+instance Default Aps where
+  def = Aps
+    { _aps_alert = def
+    , _aps_badge = Nothing
+    , _aps_sound = Nothing
+    , _aps_contentAvailable = Nothing
+    , _aps_category = Nothing
+    , _aps_threadId = Nothing
+    }
+
 data ApsAlert = ApsAlert
   { _apsAlert_title :: Text
   , _apsAlert_body :: Text
   , _apsAlert_launchImage :: Maybe Text
   }
+
+instance Default ApsAlert where
+  def = ApsAlert
+    { _apsAlert_title = ""
+    , _apsAlert_body = ""
+    , _apsAlert_launchImage = Nothing
+    }
 
 $(deriveJSON (defaultOptions { fieldLabelModifier = toKebab . fromHumps . drop 10, omitNothingFields = True }) ''ApsAlert)
 $(deriveJSON (defaultOptions { fieldLabelModifier = toKebab . fromHumps . drop 5, omitNothingFields = True }) ''Aps)
