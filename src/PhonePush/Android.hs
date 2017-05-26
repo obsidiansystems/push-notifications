@@ -7,6 +7,7 @@ import Data.Aeson (encode)
 import Network.HTTP.Conduit
 import Network.HTTP.Types.Header (ResponseHeaders)
 
+import qualified Data.ByteString.Char8 as C8
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 
@@ -21,7 +22,7 @@ sendAndroidPushMessage mgr key p = do
   let req = target
         { method = "POST"
         , requestHeaders =
-            [ ("Authorization", BS.append "key=" key)
+            [ ("Authorization", BS.append "key=" $ C8.takeWhile (/='\n') key)
             , ("Content-Type", "application/json")
             ]
         , requestBody = RequestBodyLBS $ encode p
@@ -38,5 +39,3 @@ pushMess apikey payload = do
                                        ("Content-Type", "application/json")],
                      requestBody = RequestBodyLBS payload} mgr
   return $ responseHeaders res
-
-
