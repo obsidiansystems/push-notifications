@@ -23,6 +23,12 @@ data FcmPayload = FcmPayload
   , _fcmPayload_restrictedPackageName :: Maybe Text
   , _fcmPayload_dryRun :: Maybe Bool
   , _fcmPayload_notification :: Maybe FcmNotification
+  , _fcmPayload_data :: Maybe FcmData
+  }
+  deriving (Show, Read, Eq, Ord)
+
+data FcmData = FcmData
+  { _fcmData_custom :: Text
   }
   deriving (Show, Read, Eq, Ord)
 
@@ -37,6 +43,7 @@ instance Default FcmPayload where
     , _fcmPayload_restrictedPackageName = Nothing
     , _fcmPayload_dryRun = Nothing
     , _fcmPayload_notification = Nothing
+    , _fcmPayload_data = Nothing
     }
 
 data FcmNotification = FcmNotification
@@ -63,5 +70,6 @@ instance Default FcmNotification where
     , _fcmNotification_clickAction = Nothing
     }
 
+$(deriveJSON (defaultOptions { fieldLabelModifier = toQuietSnake . fromHumps . drop 9 }) ''FcmData)
 $(deriveJSON (defaultOptions { fieldLabelModifier = toQuietSnake . fromHumps . drop 17, omitNothingFields = True}) ''FcmNotification)
 $(deriveJSON (defaultOptions { fieldLabelModifier = toQuietSnake . fromHumps . drop 12, omitNothingFields = True}) ''FcmPayload)

@@ -11,6 +11,7 @@ import Text.Casing
 data ApsPayload = ApsPayload
   { _apsPayload_aps :: Aps
   }
+  deriving (Show, Read, Eq, Ord)
 
 instance Default ApsPayload where
   def = ApsPayload def
@@ -28,7 +29,9 @@ data Aps = Aps
   -- ^ The app-specific <https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/SupportingNotificationsinYourApp.html#//apple_ref/doc/uid/TP40008194-CH4-SW26 notification category>
   , _aps_threadId :: Maybe Text
   -- ^ The app-specific messaging thread identifier, used to group notifications
+  , _aps_custom :: Maybe Text
   }
+  deriving (Show, Read, Eq, Ord)
 
 instance Default Aps where
   def = Aps
@@ -38,6 +41,7 @@ instance Default Aps where
     , _aps_contentAvailable = Nothing
     , _aps_category = Nothing
     , _aps_threadId = Nothing
+    , _aps_custom = Nothing
     }
 
 data ApsAlert = ApsAlert
@@ -45,6 +49,7 @@ data ApsAlert = ApsAlert
   , _apsAlert_body :: Text
   , _apsAlert_launchImage :: Maybe Text
   }
+  deriving (Show, Read, Eq, Ord)
 
 instance Default ApsAlert where
   def = ApsAlert
