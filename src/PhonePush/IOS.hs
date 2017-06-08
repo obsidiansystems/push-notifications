@@ -140,7 +140,7 @@ sendApplePushMessage sslsocket m =
 buildPDU :: ApplePushMessage -> Put
 buildPDU (ApplePushMessage token payload expiry)
   | (B.length token) /= 32 = fail "Invalid token"
-  | (BL.length payload > 255) = fail "Payload too large"
+  | (BL.length payload > 2047) = fail "Payload too large"
   | otherwise = do
     putWord8 1
     putWord32be 1
