@@ -137,10 +137,10 @@ sendApplePushMessage sslsocket m =
       pdu = B.concat $ BL.toChunks lpdu
   in SSL.write sslsocket pdu
 
-tokenLength :: Int
+tokenLength :: Num a => a
 tokenLength = 32
 
-maxPayloadLength :: Int
+maxPayloadLength :: Num a => a
 maxPayloadLength = 2048
 
 buildPDU :: ApplePushMessage -> Put
