@@ -137,10 +137,16 @@ sendApplePushMessage sslsocket m =
       pdu = B.concat $ BL.toChunks lpdu
   in SSL.write sslsocket pdu
 
+tokenLength :: Int
+tokenLength = 32
+
+maxPayloadLength :: Int
+maxPayloadLength = 2048
+
 buildPDU :: ApplePushMessage -> Put
 buildPDU (ApplePushMessage token payload expiry)
-  | (B.length token) /= 32 = fail "Invalid token"
-  | (BL.length payload > 2047) = fail "Payload too large"
+  | (B.length token) /= tokenLength = fail "Invalid token"
+  | (BL.length payload >= maxPayloadLength) = fail "Payload too large"
   | otherwise = do
     putWord8 1
     putWord32be 1
