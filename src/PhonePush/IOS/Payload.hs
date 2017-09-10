@@ -18,7 +18,7 @@ instance Default ApsPayload where
   def = ApsPayload def Nothing
 
 data Aps = Aps
-  { _aps_alert :: ApsAlert
+  { _aps_alert :: Maybe ApsAlert
   -- ^ The alert content
   , _aps_badge :: Maybe Int
   -- ^ The unread count to display on the application icon
@@ -35,7 +35,7 @@ data Aps = Aps
 
 instance Default Aps where
   def = Aps
-    { _aps_alert = def
+    { _aps_alert = Nothing
     , _aps_badge = Nothing
     , _aps_sound = Nothing
     , _aps_contentAvailable = Nothing
