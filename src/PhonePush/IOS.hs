@@ -138,7 +138,7 @@ withAPNSSocket (APNSConfig server keyfile certfile) f = withOpenSSL $ do
     SSL.connect sslsocket  -- Handshake
     -- Use socket
     f sslsocket
-   -- Close gracefully
+    -- Close gracefully
     SSL.shutdown sslsocket Unidirectional
 
 -- | Send a message through the SSL socket
