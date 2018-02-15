@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 -- |
 -- Module: PhonePush.IOS
@@ -35,6 +36,7 @@
 
 module PhonePush.IOS where
 
+import Control.Exception (bracket, catch, SomeException)
 import Data.Binary.Put
 import Data.Convertible (convert)
 import GHC.Word (Word32, Word16)
@@ -80,6 +82,15 @@ checkFailLive = checkFail feedbackLive
 checkFailTest :: FilePath -> FilePath -> IO [B.ByteString]
 checkFailTest = checkFail feedbackTest
 
+withSocketSafe :: ProtocolNumber -> (Socket -> IO a) -> IO a
+withSocketSafe proto =
+  bracket (socket AF_INET Stream proto) $ \sock ->
+    catch (close sock) $ \(e :: SomeException) ->
+      putStrLn . unwords $ [ "Caught exception trying to close"
+                           , "Apple push notifications socket:"
+                           , show e
+                           ]
+
 checkFail :: String -> FilePath -> FilePath -> IO [B.ByteString]
 checkFail server keyfile certfile = withOpenSSL $ do
   ssl <- context
@@ -90,16 +101,16 @@ checkFail server keyfile certfile = withOpenSSL $ do
 
   proto <- (getProtocolNumber "tcp")
   he <- getHostByName server
-  sock <- socket AF_INET Stream proto
-  Network.Socket.connect sock (SockAddrInet 2196 (hostAddress he))
+  withSocketSafe proto $ \sock -> do
+    Network.Socket.connect sock (SockAddrInet 2196 (hostAddress he))
 
-  sslsocket <- connection ssl sock
-  SSL.connect sslsocket  -- Handshake
-  bs <- SSL.read sslsocket 7600000
-  print $ B.length bs
-  SSL.shutdown sslsocket Unidirectional
+    sslsocket <- connection ssl sock
+    SSL.connect sslsocket  -- Handshake
+    bs <- SSL.read sslsocket 7600000
+    print $ B.length bs
+    SSL.shutdown sslsocket Unidirectional
 
-  return $ splitBS bs
+    return $ splitBS bs
 
 -- | Opens an APNS connection, runs the supplied action with the SSL socket, and closes the connection.
 --
@@ -120,15 +131,15 @@ withAPNSSocket (APNSConfig server keyfile certfile) f = withOpenSSL $ do
   -- Open socket
   proto <- (getProtocolNumber "tcp")
   he <- getHostByName server
-  sock <- socket AF_INET Stream proto
-  Network.Socket.connect sock (SockAddrInet 2195 (hostAddress he))
-  -- Promote socket to SSL stream
-  sslsocket <- connection ssl sock
-  SSL.connect sslsocket  -- Handshake
-  -- Use socket
-  f sslsocket
- -- Close gracefully
-  SSL.shutdown sslsocket Unidirectional
+  withSocketSafe proto $ \sock -> do
+    Network.Socket.connect sock (SockAddrInet 2195 (hostAddress he))
+    -- Promote socket to SSL stream
+    sslsocket <- connection ssl sock
+    SSL.connect sslsocket  -- Handshake
+    -- Use socket
+    f sslsocket
+   -- Close gracefully
+    SSL.shutdown sslsocket Unidirectional
 
 -- | Send a message through the SSL socket
 sendApplePushMessage :: SSL -> ApplePushMessage -> IO ()
