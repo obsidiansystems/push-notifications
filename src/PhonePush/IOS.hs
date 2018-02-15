@@ -36,7 +36,7 @@
 
 module PhonePush.IOS where
 
-import Control.Exception (bracket, catch, SomeException)
+import Control.Exception (bracket, catch, IOException)
 import Data.Binary.Put
 import Data.Convertible (convert)
 import GHC.Word (Word32, Word16)
@@ -85,7 +85,7 @@ checkFailTest = checkFail feedbackTest
 withSocketSafe :: ProtocolNumber -> (Socket -> IO a) -> IO a
 withSocketSafe proto =
   bracket (socket AF_INET Stream proto) $ \sock ->
-    catch (close sock) $ \(e :: SomeException) ->
+    catch (close sock) $ \(e :: IOException) ->
       putStrLn . unwords $ [ "Caught exception trying to close"
                            , "Apple push notifications socket:"
                            , show e
