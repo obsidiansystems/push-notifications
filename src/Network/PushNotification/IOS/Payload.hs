@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module PhonePush.IOS.Payload where
+module Network.PushNotification.IOS.Payload where
 
 import Data.Aeson.TH
 import Data.Default

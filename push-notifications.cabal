@@ -1,12 +1,12 @@
-name:             phone-push
-version:          0.1.4
-copyright:        (c) 2013 David Fendrich
+name:             push-notifications
+version:          0.2
+copyright:        (c) 2019 Obsidian Systems and David Fendrich
 license:          BSD3
 license-file:     LICENSE
-maintainer:       David Fendrich <david@aitellu.com>
+maintainer:       maintainer@obsidian.systems
 build-type:       Simple
 cabal-version:    >= 1.14
-homepage:         https://github.com/gurgeh/haskell-phone-push
+homepage:         https://github.com/obsidiansystems/haskell-phone-push
 category:         Network APIs
 stability:        experimental
 synopsis:         Push notifications for Android and iOS
@@ -14,19 +14,22 @@ description:      Push notifications for Android and iOS
                   .
                   Functions for sending push notifications to popular mobile platforms.
                   .
+extra-source-files:
+  README.md
+  ChangeLog.md
 
 source-repository head
   type: git
-  location: http://github.com/gurgeh/haskell-phone-push.git
+  location: http://github.com/obsidiansystems/haskell-phone-push.git
 
 Library
   Exposed-modules:
-      PhonePush.Android
-      PhonePush.Android.Payload
-      PhonePush.IOS
-      PhonePush.IOS.Payload
+      Network.PushNotification.Android
+      Network.PushNotification.Android.Payload
+      Network.PushNotification.IOS
+      Network.PushNotification.IOS.Payload
   ghc-options:
-      -Wall -fno-warn-unused-do-bind
+      -Wall
   default-language:
       Haskell2010
   hs-source-dirs:
@@ -49,4 +52,3 @@ Library
     , text
     , casing
     , data-default
-

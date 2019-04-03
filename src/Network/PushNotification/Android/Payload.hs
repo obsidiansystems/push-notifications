@@ -1,12 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 -- |
--- Module: PhonePush.Android.Payload
+-- Module: Network.PushNotification.Android.Payload
 --
 -- Data type and JSON instances for Firebase Cloud Messaging payloads
 -- For more information, please see <https://firebase.google.com/docs/cloud-messaging/http-server-ref Google's documentation>.
 
-module PhonePush.Android.Payload where
+module Network.PushNotification.Android.Payload where
 
 import Data.Aeson.TH
 import Data.Default

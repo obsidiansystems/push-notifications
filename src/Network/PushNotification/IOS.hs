@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module: PhonePush.IOS
+-- Module: Network.PushNotification.IOS
 --
 -- Apple Push Notification Service provider
 --
@@ -33,7 +33,7 @@
 -- == Credits
 -- Originally based on a blog post by Teemu Ikonen, available <https://bravenewmethod.com/2012/11/08/apple-push-notifications-with-haskell/ here>.
 
-module PhonePush.IOS where
+module Network.PushNotification.IOS where
 
 import Data.Binary.Put
 import Data.Convertible (convert)
@@ -88,7 +88,7 @@ checkFail server keyfile certfile = withOpenSSL $ do
   contextSetDefaultCiphers ssl
   contextSetVerificationMode ssl SSL.VerifyNone
 
-  proto <- (getProtocolNumber "tcp")
+  proto <- getProtocolNumber "tcp"
   he <- getHostByName server
   sock <- socket AF_INET Stream proto
   Network.Socket.connect sock (SockAddrInet 2196 (hostAddress he))
@@ -145,8 +145,8 @@ maxPayloadLength = 2048
 
 buildPDU :: ApplePushMessage -> Put
 buildPDU (ApplePushMessage token payload expiry)
-  | (B.length token) /= tokenLength = fail "Invalid token"
-  | (BL.length payload >= maxPayloadLength) = fail "Payload too large"
+  | B.length token /= tokenLength = fail "Invalid token"
+  | BL.length payload >= maxPayloadLength = fail "Payload too large"
   | otherwise = do
     putWord8 1
     putWord32be 1
@@ -161,17 +161,10 @@ splitBS xs =
   let xs1 = B.drop 6 xs
       token = B.take 32 xs1
       nexst = B.drop 32 xs1
-  in if B.null token then [] else token:(splitBS nexst)
+  in if B.null token then [] else token : splitBS nexst
 
-getExpiryTime :: IO (Word32)
+getExpiryTime :: IO Word32
 getExpiryTime = do
   pt <- getPOSIXTime
   -- One hour expiry time
   return ( (round pt + 60*60):: Word32)
-
-{-# DEPRECATED pushMess "Use withAPNSSocket and sendApplePushMessage instead." #-}
-pushMess :: String -> FilePath -> FilePath -> BL.ByteString -> [B.ByteString] -> IO ()
-pushMess server keyfile certfile payload tokens = withAPNSSocket (APNSConfig server keyfile certfile) $ \sslsocket -> do
-  expiration <- getExpiryTime
-  let sendPDU token = sendApplePushMessage sslsocket $ ApplePushMessage token payload expiration
-  sequence_ $ map sendPDU tokens
