@@ -17,9 +17,9 @@ To construct an android push message payload, have a look at `Network.PushNotifi
 Sending push notifications requires an "Apple Push Services" certificate and an Apple-provided device token.
 
 ### Getting an APS Certificate
-The APS certificate is produced in the iOS Provisioning Portal. Once you've generated the certificate, you can download it from the Provisioning Portal.  It is usually named @aps_production.cer@ or @aps_development.cer@.
+The APS certificate is produced in the iOS Provisioning Portal. Once you've generated the certificate, you can download it from the Provisioning Portal.  It is usually named `aps_production.cer` or `aps_development.cer`.
 
-The private key for the certificate can be extracted from Apple's Keychain utility as a @.p12@ file.
+The private key for the certificate can be extracted from Apple's Keychain utility as a `.p12` file.
 
 Once you have both the certificate and private key, the following commands can be used to convert the certificate and private key files into the format required by this library.
 
@@ -32,7 +32,7 @@ openssl pkcs12 -in key.p12 -out key.pem -nodes
 
 Device tokens are retrieved on the device itself by calling the @registerForRemoteNotifications@ method of the @UIApplication@ object.
 
-For more information, please see [Apple's documentation](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/HandlingRemoteNotifications.html#//apple_ref/doc/uid/TP40008194-CH6-SW1 here).
+For more information, please see [Apple's documentation](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/HandlingRemoteNotifications.html#//apple_ref/doc/uid/TP40008194-CH6-SW1).
 
 ## Credits
 
