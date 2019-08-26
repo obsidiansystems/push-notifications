@@ -5,7 +5,7 @@ license:          BSD3
 license-file:     LICENSE
 maintainer:       maintainer@obsidian.systems
 build-type:       Simple
-cabal-version:    >= 1.14
+cabal-version:    1.14
 homepage:         https://github.com/obsidiansystems/push-notifications
 category:         Network APIs
 stability:        experimental
@@ -17,6 +17,10 @@ description:      Push notifications for Android and iOS
 extra-source-files:
   README.md
   ChangeLog.md
+
+
+tested-with:
+  GHC  ==8.0.2 || ==8.2.2 || ==8.4.4 || ==8.6.5
 
 source-repository head
   type: git
