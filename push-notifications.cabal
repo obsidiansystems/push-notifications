@@ -1,5 +1,5 @@
 name:             push-notifications
-version:          0.2.1
+version:          0.2.1.1
 copyright:        (c) 2019 Obsidian Systems, Teemu Ikonen, David Fendrich
 license:          BSD3
 license-file:     LICENSE
@@ -41,7 +41,8 @@ Library
     , conduit >= 1.0.0
     , http-conduit >= 1.9.1
     , HsOpenSSL >= 0.10.3.3
-    , network >= 2.4.1.2
+    , network >= 3
+    , network-bsd >= 3
     , time >= 1.4
     , base16-bytestring >= 0.1.1.5
     , convertible >= 1.0.11.1

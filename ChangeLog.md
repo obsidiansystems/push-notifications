@@ -1,5 +1,9 @@
 # Revision history for push-notifications
 
+## 0.2.1.1
+
+* Support network 0.3.0.0+
+
 ## 0.2.1.0
 
 * APNS: Close socket upon exception
