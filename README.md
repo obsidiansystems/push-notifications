@@ -36,4 +36,4 @@ For more information, please see [Apple's documentation](https://developer.apple
 
 ## Credits
 
-Originally based on a blog post by Teemu Ikonen, available [here](https://bravenewmethod.com/2012/11/08/apple-push-notifications-with-haskell/) and packaged by David Fendrich as the "phone-push" library on hackage. That library was eventually forked and updated and, eventually, became this one.
+Originally based on a blog post by Teemu Ikonen, available [here](https://bravenewmethod.com/2012/11/08/apple-push-notifications-with-haskell/) and packaged by David Fendrich as the "phone-push" library on hackage. That library was forked and updated and, eventually, became this one.
